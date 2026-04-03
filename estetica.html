@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-PT" class="dark m-0 p-0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumière | The Science of Aesthetic Performance</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["Manrope", "ui-sans-serif", "system-ui", "sans-serif"],
+                        headline: ["Manrope", "sans-serif"],
+                        label: ["Inter", "sans-serif"],
+                    },
+                    colors: {
+                        background: "#0A0A0A",
+                        primary: "#C5A059",
+                        'primary-light': "#F5E6CC",
+                        'primary-dark': "#8E6F3E",
+                        secondary: "#E2D1C3",
+                        'secondary-container': "#2D2926",
+                        'surface-container-low': "#141414",
+                        'surface-container-high': "#1F1F1F",
+                        'surface-bright': "#2A2A2A",
+                        'surface-variant': "#262626",
+                        'on-surface': "#F2F2F2",
+                        'on-surface-variant': "#D1C7B7",
+                        'on-primary': "#0A0A0A",
+                        'outline-variant': "#3D3D3D",
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 3s infinite linear',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% center' },
+                            '100%': { backgroundPosition: '200% center' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            html { scroll-behavior: smooth; }
+
+            /* Luxury Scrollbar */
+            ::-webkit-scrollbar { width: 6px; }
+            ::-webkit-scrollbar-track { background: #0A0A0A; }
+            ::-webkit-scrollbar-thumb {
+                background: #1F1F1F;
+                border-radius: 10px;
+                border: 1px solid rgba(197, 160, 89, 0.1);
+            }
+            ::-webkit-scrollbar-thumb:hover { background: #C5A059; }
+
+            .glass-card {
+                background: rgba(31, 31, 31, 0.4);
+                backdrop-filter: blur(24px);
+                border: 1px solid rgba(197, 160, 89, 0.08);
+                transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            }
+
+            .glass-card:hover {
+                background: rgba(31, 31, 31, 0.6);
+                border-color: rgba(197, 160, 89, 0.3);
+                transform: translateY(-8px) scale(1.02);
+            }
+
+            .metallic-gradient {
+                background: linear-gradient(135deg, #8E6F3E 0%, #C5A059 25%, #F5E6CC 50%, #C5A059 75%, #8E6F3E 100%);
+                background-size: 200% 200%;
+            }
+
+            .text-gradient-gold {
+                @apply bg-clip-text text-transparent animate-shimmer;
+                background-image: linear-gradient(90deg, #C5A059 0%, #F5E6CC 25%, #C5A059 50%, #F5E6CC 75%, #C5A059 100%);
+                background-size: 200% auto;
+            }
+
+            .glow-gold { box-shadow: 0 0 50px -12px rgba(197, 160, 89, 0.3); }
+            .glow-soft { box-shadow: 0 0 80px -20px rgba(197, 160, 89, 0.15); }
+
+            .ambient-light {
+                @apply absolute rounded-full blur-[120px] pointer-events-none opacity-20;
+                background: radial-gradient(circle, rgba(197, 160, 89, 0.4) 0%, transparent 70%);
+            }
+            
+            .reveal {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+                transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+            }
+            
+            .reveal.active {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            .header-scrolled { @apply bg-background/95 backdrop-blur-3xl py-4 border-white/10 shadow-2xl; }
+            .header-top { @apply bg-transparent py-6 border-transparent; }
+
+            .nav-link-scrolled { @apply text-on-surface/90 hover:text-primary; }
+            .nav-link-top { @apply text-on-surface/60 hover:text-primary; }
+
+            /* Mobile/Tablet Menu Animation */
+            #mobile-menu {
+                transform: translateX(100%);
+                transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            }
+            #mobile-menu.open {
+                transform: translateX(0);
+            }
+            #mobile-backdrop {
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.4s ease;
+            }
+            #mobile-backdrop.open {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        html { @apply m-0 p-0 overflow-x-hidden overflow-y-auto; height: auto; }
+        body { @apply m-0 p-0 bg-background text-on-surface antialiased selection:bg-primary selection:text-on-primary; overflow: visible; min-height: 100%; }
+    </style>
+</head>
+<body>
+    <div class="relative min-h-screen w-full">
+        <!-- Ambient Glows -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="ambient-light top-[-10%] left-[-10%] w-[60vw] h-[60vw]"></div>
+            <div class="ambient-light bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] opacity-10"></div>
+            <div class="ambient-light top-[40%] left-[20%] w-[30vw] h-[30vw] opacity-5"></div>
+        </div>
+
+        <!-- Navigation -->
+        <nav id="main-nav" class="fixed top-0 w-full z-50 transition-all duration-500 border-b header-top">
+            <div class="max-w-7xl mx-auto flex justify-between items-center px-8">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="hexagon" class="text-primary fill-primary/10 w-6 h-6"></i>
+                    <span class="text-xl font-light tracking-[0.25em] uppercase text-on-surface">Lumière</span>
+                </div>
+
+                <!-- Desktop Links -->
+                <div class="hidden lg:flex items-center gap-10 font-label font-light tracking-widest uppercase text-[10px]">
+                    <a href="#tratamentos" class="nav-link transition-colors duration-300 nav-link-top">Tratamentos</a>
+                    <a href="#protocolos" class="nav-link transition-colors duration-300 nav-link-top">Protocolos</a>
+                    <a href="#clinica" class="nav-link transition-colors duration-300 nav-link-top">Clínica</a>
+                    <a href="#" class="metallic-gradient glow-gold px-7 py-2.5 rounded-full text-on-primary font-medium tracking-normal normal-case active:scale-95 transition-all">Agendar</a>
+                </div>
+                
+                <!-- Hamburger (Mobile & Tablet) -->
+                <button id="menu-open" class="lg:hidden text-primary hover:opacity-80 transition-opacity">
+                    <i data-lucide="menu" class="w-7 h-7"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile/Tablet Menu Backdrop -->
+        <div id="mobile-backdrop" class="fixed inset-0 z-[90] bg-background/40 backdrop-blur-sm lg:hidden"></div>
+
+        <!-- Mobile/Tablet Menu Drawer -->
+        <div id="mobile-menu" class="fixed inset-y-0 right-0 w-[75%] sm:w-[50%] md:w-full md:max-w-[380px] z-[100] bg-background/95 backdrop-blur-2xl border-l border-white/10 md:border-white/5 md:bg-black/60 md:backdrop-blur-xl flex flex-col items-center justify-center md:items-start md:justify-start p-8 md:px-8 md:py-0 md:pt-48 lg:hidden shadow-2xl">
+            <div class="flex flex-col items-center justify-center md:justify-start md:items-start gap-12 md:gap-0 text-center md:text-left w-full h-full">
+                <div class="flex items-center gap-3 mb-4 md:mb-20 md:pl-2">
+                    <i data-lucide="hexagon" class="text-primary fill-primary/10 w-8 h-8"></i>
+                    <span class="text-2xl font-light tracking-[0.25em] uppercase text-on-surface">Lumière</span>
+                </div>
+
+                <div class="flex flex-col gap-8 md:gap-0 font-label font-light tracking-widest uppercase text-sm w-full">
+                    <a href="#tratamentos" class="mobile-link text-on-surface/80 hover:text-primary md:hover:text-[#D4AF37] transition-all duration-300 md:py-8 md:pl-2 md:border-b md:border-white/5 md:w-full">Tratamentos</a>
+                    <a href="#protocolos" class="mobile-link text-on-surface/80 hover:text-primary md:hover:text-[#D4AF37] transition-all duration-300 md:py-8 md:pl-2 md:border-b md:border-white/5 md:w-full">Protocolos</a>
+                    <a href="#clinica" class="mobile-link text-on-surface/80 hover:text-primary md:hover:text-[#D4AF37] transition-all duration-300 md:py-8 md:pl-2 md:border-b md:border-white/5 md:w-full">Clínica</a>
+                    
+                    <!-- Conversion Button inside Menu -->
+                    <button class="mt-10 metallic-gradient glow-gold px-12 py-4 rounded-full text-on-primary font-medium active:scale-95 transition-all w-full flex items-center justify-center gap-3">
+                        Agendar Consulta
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-8 px-6 text-center z-10">
+            <div class="reveal inline-block px-5 py-2 rounded-full bg-surface-container-low border border-outline-variant/20 mb-8">
+                <span class="font-label text-[10px] tracking-[0.3em] uppercase text-primary/90">The Science of Aesthetic Performance</span>
+            </div>
+
+            <h1 class="reveal text-5xl md:text-8xl lg:text-9xl font-headline font-light tracking-tight leading-[1.05] mb-8 max-w-6xl">
+                A ciência da <span class="text-gradient-gold italic">beleza</span>, <br> 
+                o rigor da <span class="italic">performance</span>
+            </h1>
+
+            <p class="reveal font-headline font-light text-on-surface-variant/80 text-base md:text-xl max-w-2xl mb-12 leading-relaxed">
+                Protocolos exclusivos desenvolvidos com tecnologia de ponta para resultados que transcendem a estética convencional.
+            </p>
+
+            <div class="reveal flex flex-col sm:flex-row gap-5 z-20 relative">
+                <button class="metallic-gradient glow-gold px-12 py-4 rounded-full text-on-primary font-medium active:scale-95 transition-all flex items-center justify-center gap-3">
+                    Agendar Consulta
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+                <button class="px-12 py-4 rounded-xl bg-surface-container-high/20 border border-outline-variant/10 text-on-surface font-light backdrop-blur-md hover:bg-surface-container-high/40 transition-all active:scale-95">
+                    Ver Procedimentos
+                </button>
+            </div>
+        </section>
+
+        <!-- Treatments Section -->
+        <section id="tratamentos" class="py-32 px-6 max-w-7xl mx-auto relative z-10">
+            <div class="reveal flex flex-col lg:flex-row justify-between items-center lg:items-end mb-20 gap-8 text-center lg:text-left">
+                <div class="max-w-2xl">
+                    <span class="font-label text-xs uppercase tracking-[0.3em] text-primary mb-4 block">Especialidades</span>
+                    <h2 class="text-4xl md:text-6xl font-headline font-light leading-tight">Engenharia estética para cada detalhe.</h2>
+                </div>
+                <div class="text-on-surface-variant/70 font-light text-base max-w-xs lg:text-right leading-relaxed">
+                    Tratamentos minimamente invasivos com foco em naturalidade e regeneração tecidual profunda.
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="reveal glass-card p-10 rounded-2xl group flex flex-col items-center lg:items-start text-center lg:text-left">
+                    <div class="w-14 h-14 rounded-full bg-primary/5 flex items-center justify-center mb-8 group-hover:bg-primary/10 transition-colors">
+                        <i data-lucide="microscope" class="text-primary w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-headline font-light mb-4">Bioestimuladores</h3>
+                    <p class="text-on-surface-variant/60 font-light text-sm leading-relaxed mb-8">
+                        Estímulo natural de colágeno para restauração da firmeza e densidade cutânea de forma progressiva.
+                    </p>
+                    <div class="w-full h-[1px] bg-outline-variant/10 mb-6"></div>
+                    <div class="flex items-center justify-center lg:justify-between w-full">
+                        <span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant/40">Protocolo L-Lift</span>
+                        <i data-lucide="arrow-right" class="hidden lg:block text-primary opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500 w-5 h-5"></i>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="reveal glass-card p-10 rounded-2xl group flex flex-col items-center lg:items-start text-center lg:text-left">
+                    <div class="w-14 h-14 rounded-full bg-primary/5 flex items-center justify-center mb-8 group-hover:bg-primary/10 transition-colors">
+                        <i data-lucide="user-round" class="text-primary w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-headline font-light mb-4">Harmonização</h3>
+                    <p class="text-on-surface-variant/60 font-light text-sm leading-relaxed mb-8">
+                        Refinamento de contornos faciais respeitando a anatomia individual para resultados sofisticados.
+                    </p>
+                    <div class="w-full h-[1px] bg-outline-variant/10 mb-6"></div>
+                    <div class="flex items-center justify-center lg:justify-between w-full">
+                        <span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant/40">Anatomia Clínica</span>
+                        <i data-lucide="arrow-right" class="hidden lg:block text-primary opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500 w-5 h-5"></i>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="reveal glass-card p-10 rounded-2xl group flex flex-col items-center lg:items-start text-center lg:text-left">
+                    <div class="w-14 h-14 rounded-full bg-primary/5 flex items-center justify-center mb-8 group-hover:bg-primary/10 transition-colors">
+                        <i data-lucide="accessibility" class="text-primary w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-headline font-light mb-4">Corpo</h3>
+                    <p class="text-on-surface-variant/60 font-light text-sm leading-relaxed mb-8">
+                        Tecnologia avançada para tratamento de gordura localizada, flacidez e definição muscular.
+                    </p>
+                    <div class="w-full h-[1px] bg-outline-variant/10 mb-6"></div>
+                    <div class="flex items-center justify-center lg:justify-between w-full">
+                        <span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant/40">BodySculpt Pro</span>
+                        <i data-lucide="arrow-right" class="hidden lg:block text-primary opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500 w-5 h-5"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="clinica" class="py-32 bg-surface-container-low/20 relative overflow-hidden z-10 border-y border-white/5">
+            <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-center">
+                <div class="reveal relative max-w-xl mx-auto lg:mx-0">
+                    <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative group">
+                        <div class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=1000" alt="Clínica" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" referrerpolicy="no-referrer" loading="lazy">
+                    </div>
+                    <div class="absolute -bottom-8 -right-8 glass-card glow-soft p-10 rounded-2xl hidden lg:block">
+                        <div class="text-gradient-gold text-5xl font-headline mb-1">15+</div>
+                        <div class="font-label text-[10px] uppercase tracking-[0.3em] text-on-surface-variant/60">Anos de Expertise</div>
+                    </div>
+                </div>
+
+                <div class="reveal space-y-10 text-center lg:text-left">
+                    <div>
+                        <span class="font-label text-xs uppercase tracking-[0.3em] text-primary mb-4 block">Sobre a Lumière</span>
+                        <h2 class="text-4xl md:text-6xl font-headline font-light leading-tight mb-8">Tecnologia e Protocolos Exclusivos.</h2>
+                        <p class="text-on-surface-variant/70 font-light text-base md:text-lg leading-relaxed">
+                            Aliamos a ciência médica ao olhar artístico. Utilizamos equipamentos de última geração aprovados internacionalmente para garantir que cada procedimento seja seguro, preciso e eficiente.
+                        </p>
+                    </div>
+
+                    <div class="space-y-8 text-left max-w-lg mx-auto lg:mx-0">
+                        <div class="flex gap-6 items-start group">
+                            <div class="p-2 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
+                                <i data-lucide="check-circle" class="text-primary w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-on-surface text-base mb-1">Rigor Científico</h4>
+                                <p class="text-sm font-light text-on-surface-variant/60">Baseado em evidências clínicas e estudos atuais.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6 items-start group">
+                            <div class="p-2 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
+                                <i data-lucide="sparkles" class="text-primary w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-on-surface text-base mb-1">Experiência VIP</h4>
+                                <p class="text-sm font-light text-on-surface-variant/60">Atendimento personalizado e discreto.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-background w-full pt-32 pb-16 px-8 border-t border-white/5 z-10 relative">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
+                <div class="col-span-1">
+                    <div class="flex items-center gap-3 mb-10 justify-center lg:justify-start">
+                        <i data-lucide="hexagon" class="text-primary fill-primary/10 w-7 h-7"></i>
+                        <span class="text-2xl font-light tracking-[0.3em] uppercase text-on-surface">Lumière</span>
+                    </div>
+                    <p class="text-[11px] uppercase tracking-[0.2em] text-on-surface/40 leading-relaxed text-center lg:text-left">
+                        Lisbon's most exclusive aesthetic performance laboratory.
+                    </p>
+                </div>
+
+                <div class="col-span-1 text-center lg:text-left">
+                    <h5 class="text-primary font-label text-[11px] uppercase tracking-[0.3em] mb-8">Tratamentos</h5>
+                    <ul class="space-y-5">
+                        <li><a href="#" class="font-headline text-[12px] uppercase tracking-[0.15em] text-on-surface/40 hover:text-primary transition-all">Facial</a></li>
+                        <li><a href="#" class="font-headline text-[12px] uppercase tracking-[0.15em] text-on-surface/40 hover:text-primary transition-all">Corporal</a></li>
+                        <li><a href="#" class="font-headline text-[12px] uppercase tracking-[0.15em] text-on-surface/40 hover:text-primary transition-all">Protocolos VIP</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-span-1 text-center lg:text-left">
+                    <h5 class="text-primary font-label text-[11px] uppercase tracking-[0.3em] mb-8">Clínica</h5>
+                    <ul class="space-y-5">
+                        <li><a href="#" class="font-headline text-[12px] uppercase tracking-[0.15em] text-on-surface/40 hover:text-primary transition-all">Localização</a></li>
+                        <li><a href="#" class="font-headline text-[12px] uppercase tracking-[0.15em] text-on-surface/40 hover:text-primary transition-all">Sobre Nós</a></li>
+                        <li><a href="#" class="font-headline text-[12px] uppercase tracking-[0.15em] text-on-surface/40 hover:text-primary transition-all">WhatsApp</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-span-1">
+                    <h5 class="text-primary font-label text-[11px] uppercase tracking-[0.3em] mb-8 text-center lg:text-left">Newsletter</h5>
+                    <div class="flex border-b border-outline-variant/20 pb-3 group max-w-xs mx-auto lg:mx-0">
+                        <input type="email" placeholder="E-MAIL" class="bg-transparent border-none focus:ring-0 text-[11px] tracking-[0.3em] w-full placeholder:text-outline-variant/40 outline-none">
+                        <button class="text-primary hover:translate-x-2 transition-transform duration-500">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 pt-16 border-t border-white/5">
+                <div class="font-headline text-[10px] uppercase tracking-[0.2em] text-on-surface/20">
+                    © 2026 Lumière Estética Lisbon. O Rigor da Performance.
+                </div>
+                <div class="flex gap-10">
+                    <a href="#" class="font-headline text-[10px] uppercase tracking-[0.2em] text-on-surface/20 hover:text-primary transition-colors">Privacy Policy</a>
+                    <a href="#" class="font-headline text-[10px] uppercase tracking-[0.2em] text-on-surface/20 hover:text-primary transition-colors">Terms</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        const nav = document.getElementById('main-nav');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileBackdrop = document.getElementById('mobile-backdrop');
+        const menuOpen = document.getElementById('menu-open');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        // Mobile/Tablet Menu Logic
+        const openMenu = () => {
+            mobileMenu.classList.add('open');
+            mobileBackdrop.classList.add('open');
+        };
+        const closeMenu = () => {
+            mobileMenu.classList.remove('open');
+            mobileBackdrop.classList.remove('open');
+        };
+
+        menuOpen.addEventListener('click', openMenu);
+        mobileBackdrop.addEventListener('click', closeMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+        // Header Scroll Logic
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('header-scrolled');
+                nav.classList.remove('header-top');
+            } else {
+                nav.classList.remove('header-scrolled');
+                nav.classList.add('header-top');
+            }
+        });
+
+        // Reveal Animation Logic
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Subtle Parallax for Ambient Glows
+        document.addEventListener('mousemove', (e) => {
+            const glows = document.querySelectorAll('.ambient-light');
+            const x = (e.clientX / window.innerWidth - 0.5) * 40;
+            const y = (e.clientY / window.innerHeight - 0.5) * 40;
+            
+            glows.forEach((glow, index) => {
+                const factor = (index + 1) * 0.5;
+                glow.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
